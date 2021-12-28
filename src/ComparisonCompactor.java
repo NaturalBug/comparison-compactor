@@ -7,10 +7,10 @@ public class ComparisonCompactor {
 	private int ContextLength;
 	private String expected;
 	private String actual;
-	private int prefixLength;
 	private int suffixIndex;
 	private String compactExpected;
 	private String compactActual;
+	private int prefixLength;
 	private int suffixLength;
 
 	public ComparisonCompactor(int contextLength, String expected, String actual) {
@@ -57,12 +57,8 @@ public class ComparisonCompactor {
 	}
 
 	private String compactString(String source) {
-		String result = DELTA_START + source.substring(prefixLength, source.length() - suffixLength) + DELTA_END;
-		if (prefixLength > 0)
-			result = computeCommonPrefix() + result;
-		if (suffixIndex > 0)
-			result = result + computeCommonSuffix();
-		return result;
+		return computeCommonPrefix() + DELTA_START + source.substring(prefixLength, source.length() - suffixLength)
+				+ DELTA_END + computeCommonSuffix();
 	}
 
 	private void findCommonPrefix() {
