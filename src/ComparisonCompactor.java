@@ -17,13 +17,15 @@ public class ComparisonCompactor {
 	}
 
 	public String formatCompactedComparison(String message) {
-		if (canBeCompacted())
+		if (canBeCompacted()) {
+			findCommonPrefix();
+			findCommonSuffix();
+			String compactExpected = compactString(expected);
+			String compactActual = compactString(actual);
+			return Assert.format(message, compactExpected, compactActual);
+		} else {
 			return Assert.format(message, expected, actual);
-		findCommonPrefix();
-		findCommonSuffix();
-		String compactExpected = compactString(expected);
-		String compactActual = compactString(actual);
-		return Assert.format(message, compactExpected, compactActual);
+		}
 	}
 
 	private boolean canBeCompacted() {
