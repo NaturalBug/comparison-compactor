@@ -5,29 +5,29 @@ public class ComparisonCompactor {
 	private static final String DELTA_END = "]";
 	private static final String DELTA_START = "[";
 	private int ContextLength;
-	private String Expected;
-	private String Actual;
+	private String expected;
+	private String actual;
 	private int prefix;
 	private int suffix;
 
 	public ComparisonCompactor(int contextLength, String expected, String actual) {
 		ContextLength = contextLength;
-		Expected = expected;
-		Actual = actual;
+		this.expected = expected;
+		this.actual = actual;
 	}
 
 	public String compact(String message) {
 		if (ShouldNotCompact())
-			return Assert.format(message, Expected, Actual);
+			return Assert.format(message, expected, actual);
 		findCommonPrefix();
 		findCommonSuffix();
-		String expected = compactString(Expected);
-		String actual = compactString(Actual);
-		return Assert.format(message, expected, actual);
+		String compactExpected = compactString(expected);
+		String compactActual = compactString(actual);
+		return Assert.format(message, compactExpected, compactActual);
 	}
 
 	private boolean ShouldNotCompact() {
-		return Expected == null || Actual == null || areStringsEqual();
+		return expected == null || actual == null || areStringsEqual();
 	}
 
 	private String compactString(String source) {
@@ -41,35 +41,35 @@ public class ComparisonCompactor {
 
 	private void findCommonPrefix() {
 		prefix = 0;
-		int end = Math.min(Expected.length(), Actual.length());
+		int end = Math.min(expected.length(), actual.length());
 		for (; prefix < end; prefix++) {
-			if (Expected.charAt(prefix) != Actual.charAt(prefix))
+			if (expected.charAt(prefix) != actual.charAt(prefix))
 				break;
 		}
 	}
 
 	private void findCommonSuffix() {
-		int expectedSuffix = Expected.length() - 1;
-		int actualSuffix = Actual.length() - 1;
+		int expectedSuffix = expected.length() - 1;
+		int actualSuffix = actual.length() - 1;
 		for (; actualSuffix >= prefix && expectedSuffix >= prefix; actualSuffix--, expectedSuffix--) {
-			if (Expected.charAt(expectedSuffix) != Actual.charAt(actualSuffix))
+			if (expected.charAt(expectedSuffix) != actual.charAt(actualSuffix))
 				break;
 		}
-		suffix = Expected.length() - expectedSuffix;
+		suffix = expected.length() - expectedSuffix;
 	}
 
 	private String computeCommonPrefix() {
 		return (prefix > ContextLength ? ELLIPSIS : "")
-				+ Expected.substring(Math.max(0, prefix - ContextLength), prefix);
+				+ expected.substring(Math.max(0, prefix - ContextLength), prefix);
 	}
 
 	private String computeCommonSuffix() {
-		int end = Math.min(Expected.length() - suffix + 1 + ContextLength, Expected.length());
-		return Expected.substring(Expected.length() - suffix + 1, end) +
-				(Expected.length() - suffix + 1 < Expected.length() - ContextLength ? ELLIPSIS : "");
+		int end = Math.min(expected.length() - suffix + 1 + ContextLength, expected.length());
+		return expected.substring(expected.length() - suffix + 1, end) +
+				(expected.length() - suffix + 1 < expected.length() - ContextLength ? ELLIPSIS : "");
 	}
 
 	private boolean areStringsEqual() {
-		return Expected.equals(Actual);
+		return expected.equals(actual);
 	}
 }
