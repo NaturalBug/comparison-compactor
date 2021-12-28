@@ -17,13 +17,17 @@ public class ComparisonCompactor {
 	}
 
 	public String compact(String message) {
-		if (Expected == null || Actual == null || areStringsEqual())
+		if (ShouldNotCompact())
 			return Assert.format(message, Expected, Actual);
 		findCommonPrefix();
 		findCommonSuffix();
 		String expected = compactString(Expected);
 		String actual = compactString(Actual);
 		return Assert.format(message, expected, actual);
+	}
+
+	private boolean ShouldNotCompact() {
+		return Expected == null || Actual == null || areStringsEqual();
 	}
 
 	private String compactString(String source) {
